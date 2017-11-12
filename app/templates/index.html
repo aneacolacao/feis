@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+
+	<div>Hola, queremos que conozcas tu primer posteo</div>
+	{% if user %}
+	<p>Hay usuario</p>
+	<h3>{{ user.name }}</h3>
+	{% endif %}
+
+	<a href="#" onclick="fblogin(); return false;">Primer post</a>
+
+	<div tabindex="-1" class="modal" role="dialog" id="login-modal">
+	  <h2> Welcome to creeper! </h2>
+	  <p>
+	    Creeper requires you to login through your Facebook account.
+	  </p>
+	    <a href="#" id="facebook_login" class="button"> Get started. Login with Facebook. </a>
+	  </p>
+	</div>
+
+	<div id="user_no_facebook_auth_modal" class="modal" tabindex="-1" role="dialog">
+	  <h2> Whoops! </h2>
+	  <p>
+	    It seems that creeper isn't authorized on your Facebook account anymore.
+	  </p>
+	    <a href="#" id="facebook_login" class="button"> Reconnect to Facebook. </a>
+	  </p>
+	</div>  
+
+	<div id="user_no_facebook_login_modal" class="modal" tabindex="-1" role="dialog">
+	  <h2> Whoops! </h2>
+	  <p>
+	    It seems that you aren't logged into Facebook currently. Creeper works closely with 
+	    your Facebook account.
+	  </p>
+	    <a href="#" id="facebook_login" class="button"> Login to Facebook. </a>
+	  </p>
+	</div>
+
+	<div id="no_user_facebook_modal" class="modal" tabindex="-1" role="dialog">
+	    <h2> Welcome to creeper! </h2>
+	    <p>
+	      Logging you in through Facebook. Just a second!
+	  </div>
+	<!-- <div>Dando click aquí vamos a entrar a FB</div>
+	<a href="#" onclick="fblogin();return false;">Iniciar sesión</a> -->
+{% endblock %}
+
+{% block facebook_js %}
+	<script>
+	  // Additional JS functions here
+	 //  $(function(){
+		//   $('a#facebook_login').bind('click', function () {
+		//       FB.login(function(response) {
+		//           if (response.authResponse) {
+		//               // connected
+		//               console.log('login successful')
+		//               get_user();
+		//           } else {
+		//               // cancelled
+		//               console.log('login failed ')
+		//           }
+		//       });
+		//       return false;
+		//     });
+		// });
+	  var primero = [];
+	  
+	  //Validate status
+		function statusChangeCallback(response) {
+		    console.log('statusChangeCallback');
+		    console.log(response);
+		    // The response object is returned with a status field that lets the
+		    // app know the current login status of the person.
+		    // Full docs on the response object can be found in the documentation
+		    // for FB.getLoginStatus().
+		    if (response.status === 'connected') {
+		      // Logged into your app and Facebook.
+				console.log('Welcome!  Fetching your information.... ');
+			    
+			    get_user();
+			    
+			   //  FB.api('/me', function(response) {
+			   //    console.log(JSON.stringify(response));
+			   //    console.log('Successful login for: ' + response.name);
+			   //    //create object
+				  // primero['name']=response.name;
+				  // console.log('guardé nombre en json');
+			      
+			   //  });
+			    fbupload();
+				token = response.authResponse.accessToken;
+				console.log(token);
+		    } else if (response.status === 'not_authorized') {
+		      // The person is logged into Facebook, but not your app.
+		      console.log('Por favor autoriza nuestra aplicación.');
+
+		    } else{
+		    	console.log('Status desconectado de facebook');
+		    }
+		}
+
+	 //  function get_user() {
+	 //  		console.log('quiero obtener el usuario');
+		//     FB.api('/me', function(response) {
+		//       console.log(response);
+		//       $.getJSON($SCRIPT_ROOT + '/_get_facebook_login', 
+		//                 { facebook_id: response.id, name: response.name },
+		//                 function(data) {
+		//                   console.log(data);
+		//                   location.reload(true);
+		//                 });
+		//     });
+		// }
+
+		function get_user() {
+	  		console.log('quiero obtener el usuario');
+		    FB.api('/me', function(response) {
+		      console.log(response);
+		      console.log(JSON.stringify(response));
+		      $.getJSON($SCRIPT_ROOT + '/_get_facebook_login', 
+		                { facebook_id: response.id, name: response.name },
+		                function(data) {
+		                  console.log(data);
+		                  // location.reload(true);
+		                });
+			  console.log('Successful login for: ' + response.name);
+		  	  //create object
+		      primero['name']=response.name;
+		      console.log('guardé nombre en json');  
+			});
+		    
+		}	  
+
+	  window.fbAsyncInit = function() {
+	    FB.init({
+	      appId      : '118391618840831', // App ID
+	      channelUrl : 'http://localhost:5000/channel.html', // Channel File
+	      status     : true, // check login status
+	      cookie     : true, // enable cookies to allow the server to access the session
+	      xfbml      : true  // parse XFBML
+	    });
+		// Additional init code here
+        {% if user %}
+         FB.getLoginStatus(function(response) {
+           if (response.status === 'connected') {
+             //user logged in and connected to facebook
+             console.log('user logged in and connected to facebook');
+             // fblogin();
+           } else if (response.status === 'not_authorized') {
+             //user logged in but app not_authorized on facebook
+             console.log('user logged in but app not_authorized on facebook');
+             // $("#user_no_facebook_auth_modal").modal('show');
+           } else {
+             //user logged in but app not_logged_in to facebook
+             console.log('user logged in but app not_logged_in to facebook');
+             // $("#user_no_facebook_login_modal").modal('show');
+           }
+          }); 
+        {% else %}
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            // connected
+            console.log('connected');
+            // $("#no_user_facebook_modal").modal('show');
+            // get_user();
+          } else if (response.status === 'not_authorized') {
+            // not_authorized
+            console.log('not authorized');
+            // $("#login-modal").modal('show');
+          } else {
+            // not_logged_in
+            console.log('not logged in');
+            // $("#login-modal").modal('show');
+          }
+         });      
+      	{% endif %}
+	  };
+
+	  // Load the SDK Asynchronously
+	  (function(d){
+	     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	     if (d.getElementById(id)) {return;}
+	     js = d.createElement('script'); js.id = id; js.async = true;
+	     js.src = "//connect.facebook.net/en_US/all.js";
+	     ref.parentNode.insertBefore(js, ref);
+	   }(document));
+	</script>
+
+{% endblock %}
+

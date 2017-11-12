@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+<h3>Este es mi primer post</h3>
+<h3>"{{ mensaje.message }}"</h3>
+<p><strong>Nombre:</strong> {{ mensaje.name }}</p>
+<p><strong>Link_post:</strong> <a href="{{ mensaje.link_post }}" target="_blank">{{ mensaje.link_post }}</a></p>
+<p><strong>Link:</strong> <a href="{{ mensaje.link }}" target="_blank">{{ mensaje.link }}</a></p>
+<p><strong>Imagen:</strong> <a href="{{ mensaje.image }}" target="_blank"><img src="{{ mensaje.image }}"/></a></p>
+
+
+{% endblock %}
