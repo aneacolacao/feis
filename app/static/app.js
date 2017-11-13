@@ -146,7 +146,7 @@ function getImage(img){
 			    	console.log('logré exportar el primero'); 
 			    	// window.location.href = "http://localhost:5000/post";
 			    	console.log(dat);
-			    	window.location.href = "http://localhost:5000/post";
+			    	window.location.href = $SCRIPT_ROOT + "/post";
 			    },
 			    error: function (err){
 			    	console.log(err);

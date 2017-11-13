@@ -7,7 +7,7 @@ import jsonpickle
 app = Flask(__name__)
 
 app.config.update(
-  SECRET_KEY = 'iijkllioi9897sdasdjhas',
+  SECRET_KEY = 'iijkllsdjhas',
   DEBUG = True,
   SQLALCHEMY_DATABASE_URI = 'sqlite:///tmp/users_first.db', #in memory db. or use sqlite:////absolute/path/to/creeper.db,
   SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -110,3 +110,6 @@ def post_get():
   print('aqui viene el mensaje del usuario')
   print(user_msj)
   return render_template('post.html', mensaje=user_msj)
+
+if __name__ == "__main__":
+  app.run()
